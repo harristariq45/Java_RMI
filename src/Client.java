@@ -29,9 +29,7 @@ public class Client
             Registry reg = LocateRegistry.getRegistry("localhost",1099);
             MyInterface inf = (MyInterface) reg.lookup ("hi_server");
 
-
-
-            ClientRequest client1 = new ClientRequest();
+            ClientRequest client1 = new ClientRequest(1);
             SecretKey decodedKey = readFile();
 
 
@@ -47,7 +45,7 @@ public class Client
              AuctionItem A = (AuctionItem)auctionItem1.getObject(cipher);
 
             //to unsel you want an auctionitem variable to hold a casted auctionItem1.getObject() as auctionitem
-            System.out.println("item ID is:" + "unsealed sealdedobject can be referenced here" + " \nitem Title is: " + auctionItem1. );
+            System.out.println("item ID is:" + "unsealed sealdedobject can be referenced here" + " \nitem Title is: " + auctionItem1 );
         }
         catch (NotBoundException|RemoteException e)
         {

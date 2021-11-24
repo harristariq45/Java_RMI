@@ -10,13 +10,34 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Random;
 
 public class Server extends UnicastRemoteObject implements MyInterface
 {
+    HashMap<Integer, AuctionItem> auctionItemHashMap = new HashMap<Integer, AuctionItem>();
+    HashMap<Integer, String> clientList = new HashMap<Integer, String>();
+    private int clientId;
+    private int bidderID;
+    private int reservePrice;
+    private int currentBid;
+    private static String itemDescription;
+    private static String itemTitle;
+    private int winnerID;
+    private String name;
+    private String email;
+
     public Server() throws RemoteException
     {
         super();
 
+    }
+
+    public static void main (String args[]) throws RemoteException, NoSuchAlgorithmException, FileNotFoundException {
+        Server server = new Server();
+        startServer(server);
+        keyGenerator();
+        readFile();
     }
 
     public static void startServer(Server server)
@@ -32,8 +53,8 @@ public class Server extends UnicastRemoteObject implements MyInterface
         }
     }
 
-    public static void keyGenerator() throws NoSuchAlgorithmException, RemoteException {
-        //super();
+    public static void keyGenerator() throws RemoteException {
+
         KeyGenerator keyGen = null;
 
         try {
@@ -44,7 +65,7 @@ public class Server extends UnicastRemoteObject implements MyInterface
             try {
                 FileOutputStream fs = new FileOutputStream("L:\\Year3\\SCC311\\src\\secretKey.txt");
                 byte[] secretKeyEncoded = secretKey.getEncoded();
-                System.out.println(secretKeyEncoded +" 1 ");
+                //System.out.println(secretKeyEncoded +" 1 ");
                 fs.write(secretKeyEncoded);
                 fs.close();
             } catch (IOException e) {
@@ -58,23 +79,57 @@ public class Server extends UnicastRemoteObject implements MyInterface
 
     }
 
-
-    public static void main (String args[]) throws RemoteException, NoSuchAlgorithmException, FileNotFoundException {
-        Server server = new Server();
-        startServer(server);
-        keyGenerator();
-        readFile();
-    }
-
 //    @Override
-//    public AuctionItem getSpec(int itemId, int clientId) throws RemoteException {
+//    public AuctionItem getSpec(int clientId, int clientId) throws RemoteException {
 //
-//        return new AuctionItem(itemId);
+//        return new AuctionItem(clientId);
 //    }
 
-    public SealedObject getSpec(int itemId, SealedObject clientReq) throws IOException {
+    public SealedObject getSpec(int clientId, SealedObject clientReq) throws IOException {
         return null;
     }
+
+    @Override
+
+    public AuctionItem createAuction(int clientId, int winnerID, int reservePrice, int currentBid, String itemTitle, String itemDescription) {
+       //set item id on server so you can check for duplicates and ensure it is unique
+        //pass client id instead of item id for this function, this will allow you to return the integer of the auction while using 'itemid'  which would now be clientid as a way to complete the constructor for auction item
+        this.clientId = clientId;
+        this.winnerID = winnerID;
+        this.reservePrice = reservePrice;
+        this.currentBid = currentBid;
+        Server.itemTitle = itemTitle;
+        Server.itemDescription = itemDescription;
+        //the item id will be used as the key and as an ekement in the auction item, the itemid must be unique.
+        AuctionItem aucItem = new AuctionItem(clientId,clientId,winnerID,reservePrice,currentBid,itemTitle,itemDescription);
+
+        // return hashmap id = the auctions id
+        return auctionItemHashMap.put(clientId,aucItem);
+    }
+
+    public int clientId(String name) {
+        this.name = name;
+
+        int randomNum = rndRange(1,10000000);
+        clientList.put(randomNum, name);
+        return randomNum;
+    }
+
+    public static int rndRange (int start, int finish){
+
+        new Random().nextInt(finish + 1 - start);
+        return start;
+    }
+
+
+    @Override
+    public int newBid(int clientId, int bidderID, int currentBid) {
+        this.clientId = clientId;
+        this.bidderID = bidderID;
+        this.currentBid = currentBid;
+        return  0;
+    }
+
 
     public static SecretKey readFile() throws FileNotFoundException {
         ByteArrayOutputStream baos = null;
@@ -106,12 +161,62 @@ public class Server extends UnicastRemoteObject implements MyInterface
             }
         }
 
-        //System.out.println(baos);
-        //baos.toByteArray();
-        //System.out.println(baos);
-
-        //byte[] secretKeyEncoded = secretKey.getEncoded();
-
         return (SecretKey) new SecretKeySpec(baos.toByteArray(), "AES");
+    }
+
+    public int getWinnerID() {
+        return winnerID;
+    }
+
+    public void setWinnerID(int winnerID) {
+        this.winnerID = winnerID;
+    }
+
+    public int getCurrentBid() {
+        return currentBid;
+    }
+
+    public void setCurrentBid(int currentBid) {
+        this.currentBid = currentBid;
+    }
+
+    public int getReservePrice() {
+        return reservePrice;
+    }
+
+    public void setReservePrice(int reservePrice) {
+        this.reservePrice = reservePrice;
+    }
+
+    public int getItemId() {
+        return clientId;
+    }
+
+    public void setItemId(int clientId) {
+        this.clientId = clientId;
+    }
+
+    public int getBidderID() {
+        return bidderID;
+    }
+
+    public void setBidderID(int bidderID) {
+        this.bidderID = bidderID;
+    }
+
+    public static String getItemTitle() {
+    return itemTitle;
+}
+
+    public static void setItemTitle(String itemTitle) {
+        Server.itemTitle = itemTitle;
+    }
+
+    public static String getItemDescription() {
+        return itemDescription;
+    }
+
+    public static void setItemDescription(String itemDescription) {
+        Server.itemDescription = itemDescription;
     }
 }

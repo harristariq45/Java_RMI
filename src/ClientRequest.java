@@ -7,7 +7,6 @@ public class ClientRequest implements Serializable {
     public ClientRequest(int clientId)
     {
         this.clientId = clientId;
-
     }
 
     public int getClientId() {
