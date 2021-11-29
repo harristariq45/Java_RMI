@@ -1,28 +1,46 @@
 import java.io.Serializable;
 
+/**
+ * this is the auction item class which will be used to make instances of auction items and store their information
+ */
+
 public class AuctionItem implements Serializable {
+    public String highestBidderEmail;
+    public String highestBidderName;
+    public int highestBidderID;
+    public int currentBid;
     private int userId;
-    private final int itemId;
-    private int startingPrice;
+    private final int clientId;
     private int reservePrice;
-    private int currentBid;
     private String itemTitle;
     private  String itemDescription;
 
-    public AuctionItem(int itemId,int userId, int startingPrice, int reservePrice, int currentBid,  String itemTitle, String itemDescription)
+    /**
+     *
+     * @param highestBidderName
+     * @param highestBidderEmail
+     * @param clientId
+     * @param highestBidderID
+     * @param reservePrice
+     * @param currentBid
+     * @param itemTitle
+     * @param itemDescription
+     */
+
+    public AuctionItem(String highestBidderName, String highestBidderEmail,int clientId,int highestBidderID, int reservePrice, int currentBid,  String itemTitle, String itemDescription)
     {
-        this.itemId = itemId;
-        this.userId = userId;
-        this.startingPrice = startingPrice;
+        this.clientId = clientId;
+        this.highestBidderID = highestBidderID;
         this.reservePrice = reservePrice;
         this.currentBid = currentBid;
         this.itemTitle = itemTitle;
         this.itemDescription = itemDescription;
-
+        this.highestBidderName = highestBidderName;
+        this.highestBidderEmail=highestBidderEmail;
     }
 
-    public int getItemId() {
-        return itemId;
+    public int getClientId() {
+        return clientId;
     }
     public String getItemTitle() {
         return itemTitle;
@@ -30,23 +48,28 @@ public class AuctionItem implements Serializable {
     public String getItemDescription() {
         return itemDescription;
     }
-
-
     public void setItemTitle(String itemTitle) {
         this.itemTitle = itemTitle;
+    }
+
+    public void setItemName(String highestBidderName) {
+        this.highestBidderName = highestBidderName;
+    }
+
+    public void setItemEmail(String highestBidderEmail) {
+        this.highestBidderEmail = highestBidderEmail;
     }
 
     public void setItemDescription(String itemDescription) {
         this.itemDescription = itemDescription;
     }
 
-
-    public int getStartingPrice() {
-        return startingPrice;
+    public int getHighestBidderID() {
+        return highestBidderID;
     }
 
-    public void setStartingPrice(int startingPrice) {
-        this.startingPrice = startingPrice;
+    public void setHighestBidderID(int highestBidder) {
+        this.highestBidderID = highestBidderID;
     }
 
     public int getReservePrice() {
@@ -71,6 +94,14 @@ public class AuctionItem implements Serializable {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getHighestBidderName() {
+        return highestBidderName;
+    }
+
+    public String getHighestBidderEmail() {
+        return highestBidderEmail;
     }
 }
 
